@@ -1,4 +1,3 @@
-yum install epel-release -y
 yum install nginx -y
 yum install policycoreutils-python -y
 yum install vsftpd -y
