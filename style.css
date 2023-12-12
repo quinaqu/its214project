@@ -1,0 +1,40 @@
+@keyframes color {
+    0%   { background: #195f5f; }
+
+    60%  { background: #183d3d; }
+
+    100% { background: #195f5f; }
+  }
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+head, body {
+    background-color: #21202f;
+    animation: color 15s infinite linear;
+    color: aliceblue;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+}
+li{
+    float: left;
+}
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+li a:hover{
+    background-color: #111111; 
+}
+
+img {
+    border: solid 10px black;
+    margin-left: 30%;
+}
