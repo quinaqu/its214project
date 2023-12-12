@@ -11,5 +11,6 @@ systemctl enable --now nginx
 
 mv -f its214project/{*.html,*.css} /usr/share/nginx/html/
 
+#I tried a few methods for encrypting the passwords in the script but got lazy (and they're already exposed in the assignment)
 adduser webdev
-echo "webdev:4TheWeb!" | chpasswd
+sudo echo "4TheWeb!" | passwd "webdev" --stdin
