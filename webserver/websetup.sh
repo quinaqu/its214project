@@ -8,6 +8,8 @@ yum install vsftpd -y
 setsebool -P httpd_read_user_content 1
 systemctl enable --now nginx
 
+firewall-cmd --zone project --add-service http --permanent
+firewall-cmd --zone project --add-service ftp --permanent
 mv -f its214project/webserver/{*.html,*.css} /usr/share/nginx/html/
 
 #I tried a few methods for encrypting the passwords in the script but got lazy (and they're already exposed in the assignment)
