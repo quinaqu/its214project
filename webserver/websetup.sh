@@ -12,6 +12,12 @@ firewall-cmd --zone project --add-service http --permanent
 firewall-cmd --zone project --add-service ftp --permanent
 systemctl restart firewalld
 
+systemctl start vsftpd
+systemctl enable vsftpd
+sed -i 's#anonymous_enable=YES#anonymous_enable=NO#g' /etc/vsftpd/vsftpd.conf
+sed -i 's##chroot_list_enable=YES#chroot_list_enable=YES#g' /etc/vsftpd/vsftpd.conf
+echo "webdev" > /etc/vsftpd/chroot_list
+
 mv -f its214project/webserver/{*.html,*.css} /usr/share/nginx/html/
 
 #I tried a few methods for encrypting the passwords in the script but got lazy (and they're already exposed in the assignment)
