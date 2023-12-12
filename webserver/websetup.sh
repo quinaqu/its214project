@@ -15,7 +15,7 @@ systemctl restart firewalld
 systemctl start vsftpd
 systemctl enable vsftpd
 sed -i 's#anonymous_enable=YES#anonymous_enable=NO#' /etc/vsftpd/vsftpd.conf
-sed -i 's/#chroot_list_enable=YES/chroot_list_enable=YES' /etc/vsftpd/vsftpd.conf
+sed -i 's/#chroot_list_enable=YES/chroot_list_enable=YES/' /etc/vsftpd/vsftpd.conf
 echo "webdev" > /etc/vsftpd/chroot_list
 
 mv -f its214project/webserver/{*.html,*.css} /usr/share/nginx/html/
