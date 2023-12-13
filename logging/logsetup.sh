@@ -6,7 +6,7 @@ adduser nagiosadmin
 echo "testpass" | htpasswd "nagiosadmin" --stdin
 
 
-declare -a client=("webserver" "database" "mailserver" "client" "fileserver")
+<<:declare -a client=("webserver" "database" "mailserver" "client" "fileserver")
 declare -a address=("192.168.33.11" "192.168.33.12" "192.168.33.13" "192.168.33.14" "192.168.33.15")
 
 for i in "${!client[@]}"
