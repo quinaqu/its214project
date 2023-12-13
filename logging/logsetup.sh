@@ -1,9 +1,13 @@
-yum install -y httpd nagios nagios-plugins-all nagios-plugins-nrpe
+yum install httpd -y
+yum install nagios -y
+yum install nagios-plugins-all -y
+yum install nagios-plugins-nrpe -y
+
 systemctl enable --now nagios
 systemctl enable --now httpd
 
 adduser nagiosadmin
-echo "testpass" | htpasswd "nagiosadmin" --stdin
+echo "testpass" | htpasswd /etc/nagios/passwd "nagiosadmin" --stdin
 
 
 declare -a client=("webserver" "database" "mailserver" "client" "fileserver")
