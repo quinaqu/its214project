@@ -28,3 +28,5 @@ command_line \$USER1\$/check_nrpe -H \$HOSTADDRESS\$ -c
 \$ARG1\$
 }
 HERE
+
+sudo systemctl restart nagios
