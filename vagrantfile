@@ -1,0 +1,90 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$provisionScript = <<-SCRIPT
+sed -i 's#PasswordAuthentication no#PasswordAuthentication yes#g' /etc/ssh/sshd_config
+systemctl restart sshd
+yum install nmap -y
+yum install epel-release -y
+yum install git -y
+yum install monitoring-plugins nagios-nrpe-server -y
+cat <<HERE | sudo tee /etc/nagios/nrpe_local.cfg
+command[check_client_load]=/usr/lib/nagios/plugins/check_load -w
+5.0,4.0,3.0 -c 10.0,6.0,4.0
+command[check_client_users]=/usr/lib/nagios/plugins/check_users -w 20 -c
+50
+command[check_client_disk]=/usr/lib/nagios/plugins/check_disk -w 20% -c
+10% -p /
+command[check_client_swap]=/usr/lib/nagios/plugins/check_swap -w 20 -c 10
+command[check_client_procs]=/usr/lib/nagios/plugins/check_procs -w 250 -c
+400 -s RSZDT
+HERE
+systemctl restart nagios-nrpe-server
+sed -i 's/allowed_hosts=127.0.0.1/allowed_hosts=127.0.0.1,192.168.33.13/g' /etc/nagios/nrpe.cfg
+git clone https://github.com/quinaqu/its214project.git
+systemctl enable --now firewalld
+sed -i 's#AllowZoneDrifting=yes#AllowZoneDrifting=no#g' /etc/firewalld/firewalld.conf
+firewall-cmd --new-zone project --permanent 
+firewall-cmd --zone project --add-service ssh --permanent
+systemctl restart firewalld
+firewall-cmd --change-interface=eth0 --zone=project --permanent
+firewall-cmd --change-interface=eth1 --zone=project --permanent
+systemctl restart firewalld
+
+adduser admin
+echo "4TheAdmin!" | passwd "admin" --stdin
+SCRIPT
+
+### this is a remnant from before i just moved all the configuration to a script ###
+$webserverScript = <<-SCRIPT
+bash /home/vagrant/its214project/webserver/websetup.sh
+SCRIPT
+
+Vagrant.configure("2") do |config|
+ config.vbguest.auto_update = false
+ config.vm.provision "shell", inline: $provisionScript
+
+ config.vm.define "webserver" do |webserver|
+   webserver.vm.box = "centos/7"
+   webserver.vm.network "private_network", ip: "192.168.33.10"
+   webserver.vm.hostname = "webserver"
+   webserver.vm.provision "shell", inline: $webserverScript
+ end
+
+ config.vm.define "mailserver" do |mailserver|
+   mailserver.vm.box = "centos/7"
+   mailserver.vm.network "private_network", ip: "192.168.33.11"
+   mailserver.vm.hostname = "mailserver"
+   mailserver.vm.provision "shell", inline: "bash /home/vagrant/its214project/emailserver/mailsetup.sh"
+ end
+
+ config.vm.define "database" do |database|
+   database.vm.box = "centos/7"
+   database.vm.network "private_network", ip: "192.168.33.12"
+   database.vm.hostname = "database"
+   database.vm.provision "shell", inline: "bash /home/vagrant/its214project/database/dbsetup.sh"
+ end
+
+ config.vm.define "client" do |client|
+  client.vm.box = "centos/7"
+  client.vm.network "private_network", ip: "192.168.33.14"
+  client.vm.hostname = "client"
+  client.vm.provision "shell", inline: "bash /home/vagrant/its214project/client/clientsetup.sh"
+ 
+ end
+
+ config.vm.define "fileserver" do |fileserver|
+  fileserver.vm.box = "centos/7"
+  fileserver.vm.network "private_network", ip: "192.168.33.15"
+  fileserver.vm.hostname = "fileserver"
+  fileserver.vm.provision "shell", inline: "bash /home/vagrant/its214project/fileserver/filesetup.sh"
+ end
+ 
+ config.vm.define "logging" do |logging|
+  logging.vm.box = "centos/7"
+  logging.vm.network "private_network", ip: "192.168.33.13"
+  logging.vm.hostname = "logging"
+  logging.vm.provision "shell", inline: "bash /home/vagrant/its214project/logging/logsetup.sh"
+ end
+
+end
