@@ -21,6 +21,9 @@ echo "pop3_uidl_format = %08Xu%08Xv" >> /etc/dovecot/dovecot.conf
 echo 'export MAIL=~/Maildir' | sudo tee -a /etc/bash.bashrc | sudo tee -a /etc/profile.d/mail.sh
 source /etc/profile.d/mail.sh
 
+firewall-cmd --add-service=smtp --zone=project --permanent
+systemctl restart firewalld
+
 chkconfig --level 345 dovecot on
 systemctl enable --now dovecot
 systemctl enable --now postfix
