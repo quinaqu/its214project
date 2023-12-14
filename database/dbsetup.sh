@@ -18,4 +18,4 @@ EOF
 mysql -uroot -ptest1234 -e "CREATE USER 'dbdev'@'localhost' IDENTIFIED BY 'projectfinal'; GRANT ALL PRIVILEGES ON *.* TO 'dbdev@localhost'; FLUSH PRIVILEGES;"
 
 firewall-cmd --zone=project --add-port=1433/tcp --permanent
-firewall-cmd –reload
+systemctl restart firewalld
